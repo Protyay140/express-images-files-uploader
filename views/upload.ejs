@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Upload Files</title>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <h1> Upload the file here</h1>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="image">
+            <input type="submit">
+        </form>
+        <div>
+            <button onclick="handleImage()"
+                style="color: white; background: #000;margin-top: 5px;padding: 3px;cursor: pointer;margin-bottom: 10px;">view
+                collection</button>
+        </div>
+        <div id="imageContainer" style="margin-left: 100px;">
+            <!-- <img src="1707025391208.jpeg" alt="error loading"> -->
+            <!-- <embed src="1707081455827.pdf" type="application/pdf"> -->
+        </div>
+    </div>
+
+    <script>
+
+        async function handleImage() {
+
+            try {
+                const response = await fetch('http://localhost:3000/getImages');
+                const json = await response.json();
+
+                const data = json.fileList;
+                console.log(data);
+
+                // seperate out images and text files .......
+                let images = [];
+                let text = [];
+                data.forEach(file => {
+                    const extention = file.split('.')[1];
+                    console.log(extention);
+                    if ((extention == 'txt') || (extention == 'pdf') || (extention == 'docx') || (extention == 'doc') || (extention == 'msg') || (extention == 'ppt')) {
+                        text.push(file);
+                    } else {
+                        images.push(file);
+                    }
+                })
+
+                const container = document.getElementById('imageContainer');
+
+                container.innerHTML = '';
+
+
+                // for image data .................................
+                images.forEach(imageUrl => {
+                    const name = imageUrl.split('.')[0];
+                    const ext = imageUrl.split('.')[1];
+
+                    const imageElement = document.createElement('img');
+                    imageElement.src = `${imageUrl}`;
+                    imageElement.alt = "error loading";
+                    imageElement.width = 200;
+                    imageElement.height = 200;
+
+
+                    imageElement.onclick = function () {
+                        // Your custom onclick logic here
+                        // alert(`Clicked on ${name}`);
+                        imageElement.height = 500;
+                        imageElement.width = 500;
+                    };
+
+                    imageElement.ondblclick = function () {
+                        imageElement.height = 200;
+                        imageElement.width = 200;
+                    }
+
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = imageUrl;
+                    downloadLink.download = `${name}.${ext}`;
+                    downloadLink.innerHTML = 'download'
+                    downloadLink.style = 'margin-right : 10px'
+
+
+                    container.appendChild(imageElement);
+                    container.appendChild(downloadLink);
+                })
+
+
+                // for text data ................................
+                text.forEach(textUrl => {
+
+                    const name = textUrl.split('.')[0];
+                    const ext = textUrl.split('.')[1];
+
+                    const textElement = document.createElement('embed');
+                    textElement.src = textUrl;
+                    textElement.alt = "error loading";
+                    textElement.type = 'application/pdf'
+                    textElement.width = 200;
+                    textElement.height = 200;
+
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = textUrl;
+                    downloadLink.download = `${name}.${ext}`;
+                    downloadLink.innerHTML = 'download'
+                    downloadLink.style = 'margin-right : 10px'
+
+
+                    container.appendChild(textElement);
+                    container.appendChild(downloadLink);
+                })
+
+            } catch (error) {
+                console.log('error in fetching ...', error);
+            }
+
+        }
+        function handleClick() {
+            alert('image is clicked...')
+        }
+    </script>
+</body>
+
+</html>
