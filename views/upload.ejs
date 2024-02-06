@@ -22,7 +22,7 @@
                 style="color: white; background: #000;margin-top: 5px;padding: 3px;cursor: pointer;margin-bottom: 10px;">view
                 collection</button>
         </div>
-        <div id="imageContainer" style="margin-left: 100px;">
+        <div id="imageContainer" style="margin-left: 10px;">
             <!-- <img src="1707025391208.jpeg" alt="error loading"> -->
             <!-- <embed src="1707081455827.pdf" type="application/pdf"> -->
         </div>
@@ -33,7 +33,7 @@
         async function handleImage() {
 
             try {
-                const response = await fetch('http://localhost:3000/getImages');
+                const response = await fetch('http://localhost:8000/getImages');
                 const json = await response.json();
 
                 const data = json.fileList;
@@ -55,7 +55,7 @@
                 const container = document.getElementById('imageContainer');
 
                 container.innerHTML = '';
-
+                container.style = 'display : grid; grid-template-columns: repeat(3, minmax(0, 1fr)); justify-items: center; justify-content: space-evenly;align-content: space-evenly;'
 
                 // for image data .................................
                 images.forEach(imageUrl => {
@@ -84,12 +84,20 @@
                     const downloadLink = document.createElement('a');
                     downloadLink.href = imageUrl;
                     downloadLink.download = `${name}.${ext}`;
-                    downloadLink.innerHTML = 'download'
+                    downloadLink.innerHTML = `image_${name}.${ext}`;
                     downloadLink.style = 'margin-right : 10px'
 
 
-                    container.appendChild(imageElement);
-                    container.appendChild(downloadLink);
+                    const maindiv = document.createElement('div');
+                    const div1 = document.createElement('div');
+                    div1.appendChild(imageElement);
+                    const div2 = document.createElement('div');
+                    div2.appendChild(downloadLink);
+
+                    maindiv.appendChild(div1);
+                    maindiv.appendChild(div2);
+
+                    container.appendChild(maindiv);
                 })
 
 
@@ -109,12 +117,19 @@
                     const downloadLink = document.createElement('a');
                     downloadLink.href = textUrl;
                     downloadLink.download = `${name}.${ext}`;
-                    downloadLink.innerHTML = 'download'
-                    downloadLink.style = 'margin-right : 10px'
+                    downloadLink.innerHTML = `file_${name}.${ext}`
+                    // downloadLink.style = `color : green;`
 
+                    const maindiv = document.createElement('div');
+                    const div1 = document.createElement('div');
+                    div1.appendChild(textElement);
+                    const div2 = document.createElement('div');
+                    div2.appendChild(downloadLink);
 
-                    container.appendChild(textElement);
-                    container.appendChild(downloadLink);
+                    maindiv.appendChild(div1);
+                    maindiv.appendChild(div2);
+                    // maindiv.style = 'margin-bottom: 100px'
+                    container.appendChild(maindiv);
                 })
 
             } catch (error) {

@@ -33,9 +33,10 @@ app.post("/upload",upload.single('image'),(req,res)=>{
     // res.send(`<h1>...Image is uploaded...</h1>`)
     // res.render('uploded');
     // res.redirect('upload')
-    res.status(200).json({
-        msg : "image is successfully uploaded ..."
-    })
+    // res.status(200).json({
+    //     msg : "image is successfully uploaded ..."
+    // })
+    res.render('uploaded');
 })
 
 app.get("/getImages",(req,res)=>{
@@ -51,7 +52,7 @@ app.get("/getImages",(req,res)=>{
     })
 })
 
-const port = 3000;
+const port = 8000;
 app.listen(port,()=>{
     console.log(`server is running on port ${port}`);
 })
